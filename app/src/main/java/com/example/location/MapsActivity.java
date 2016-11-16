@@ -5,13 +5,22 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.BaseColumns;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.database.sqlite.*;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,7 +30,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
+
+    EditText titleEdit;
+    EditText contentEdit;
 
     private static final int go =3;
     private GoogleMap mMap;
@@ -34,6 +46,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        titleEdit = (EditText)findViewById(R.id.edit_message);
+        contentEdit = (EditText)findViewById(R.id.editText2);
+
+        ((Button)findViewById(R.id.button)).setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        DBHandler dbhandler = DBHandler.open(this);
+
+        if(v.getId() == R.id.button) {
+            String carName = titleEdit.getText().toString();
+
+            long cnt = dbhandler.insert(carName);
+
+            if(cnt == -1) {
+                Toast.makeText(this,
+                        carName + "가 테이블에 추가되지 않았습니다", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        carName + "가 테이블에 추가되었습니다.", Toast.LENGTH_LONG).show();
+            }
+        }
+        dbhandler.close();
     }
 
     //Restart, Pause할때마다 위치를 얻게하고싶어서 이렇게 했습니다. 더 좋은 방법이 있을거같지만 잘 모르겠습니다.
@@ -100,4 +138,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("You are here")); // 마커 생성
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
+
+
 }
