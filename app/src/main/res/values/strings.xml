@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PermissionFUck</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="edit_message">제목을 입력하세요.</string>
+    <string name="edit_contents">내용을 작성하세요.</string>
+    <string name="planets">Planet</string>
+    <string name="submit">저장하기</string>
+
+    <string-array name="spinner2">
+        <item>Food</item>
+        <item>Clothes</item>
+        <item>Electronics</item>
+        <item>etc..</item>
+        <item>etc..</item>
+    </string-array>
+</resources>
